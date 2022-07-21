@@ -7,22 +7,31 @@ import Button from './components/button'
 import Letters from './components/letters'
 import {randomWord} from './assets/random'
 import { useFetch } from "react-async"
+import axios from 'axios'
 
 function App() {
 
   let ind = Math.floor(Math.random() * (25-0+1))
   let blah = data[ind]
   let check = blah.split("")
-  const [word, setWord] = useState(check)
+  const [word, setWord] = useState([])
   const [guesses, setGuesses] = useState([])
   
-  const getRandomWord = async() => {
-    const word = await randomWord();
-    setWord(word.split(""))
-  }
+  
 
   useEffect(
-    () => {getRandomWord();}, 
+    () => {
+      const getRandomWord = async() => {
+        try{
+          const wordData = await axios.get("https://random-word-api.herokuapp.com/word")
+          let word = wordData.data[0]
+          setWord(word.split(""))
+        }catch(e){
+          throw e;
+        }
+      }
+      getRandomWord()
+    }, 
     [],
   )
   
